@@ -12,7 +12,7 @@
             FontSize="20"
             HorizontalOptions="Center"/>
 
-        <ListView x:Name="lisEstudiantes">
+        <ListView x:Name="lisEstudiantes" ItemSelected="lisEstudiantes_ItemSelected">
             <ListView.Header>
                 <!-- Encabezados de la tabla -->
                 <Grid>
@@ -53,7 +53,13 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
+           
 
         </ListView>
+        <Button x:Name="btnAgregar"
+                Text="Agregar estudiante"
+                Clicked="btnAgregar_Clicked">
+            
+        </Button>
     </VerticalStackLayout>
 </ContentPage>

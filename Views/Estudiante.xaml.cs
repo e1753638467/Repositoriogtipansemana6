@@ -22,4 +22,15 @@ public partial class Estudiante : ContentPage
 		est = new ObservableCollection<Modelos.Estudiante>(mostrar);
         lisEstudiantes.ItemsSource = est;
 	}
+
+    private void btnAgregar_Clicked(object sender, EventArgs e)
+    {
+		Navigation.PushAsync(new Views.vAgregar());
+    }
+
+    private void lisEstudiantes_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+		var objEstudiante = (Modelos.Estudiante)e.SelectedItem;
+       Navigation.PushAsync(new ActEliminar(objEstudiante));
+    }
 }
