@@ -5,7 +5,7 @@ namespace gtipansemana6.Views;
 
 public partial class Estudiante : ContentPage
 {
-	private const string Url = "http://192.168.17.21/semana6/estudiantews.php";
+	private const string Url = "http://192.168.56.1/semana6/estudiantews.php";
 
 	private readonly HttpClient cliente = new HttpClient();
 	private ObservableCollection<Modelos.Estudiante> est;

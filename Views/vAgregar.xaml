@@ -5,7 +5,7 @@
              Title="vAgregar">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Agregar Usuario"
             VerticalOptions="Center" 
             HorizontalTextAlignment="Center" 
             FontSize="20"/>

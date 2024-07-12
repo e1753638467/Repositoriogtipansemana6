@@ -1,12 +1,19 @@
 namespace gtipansemana6.Views;
 using gtipansemana6.Modelos;
+using Newtonsoft.Json;
 using System.Collections.Specialized;
 using System.Net;
+using System.Text;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 public partial class ActEliminar : ContentPage
 {
-	public ActEliminar(Modelos.Estudiante datos)
+    private const string Url = "http://192.168.56.1/semana6/estudiantews.php";
+    private readonly HttpClient cliente = new HttpClient();
+
+    public ActEliminar(Modelos.Estudiante datos)
 	{
+
 		InitializeComponent();
         txtCodigo.Text = datos.codigo.ToString();
         txtNombre.Text = datos.nombre;
@@ -15,45 +22,46 @@ public partial class ActEliminar : ContentPage
 
     }
 
-
-    private void btnElimianr_Clicked(object sender, EventArgs e)
+    private async void btnActualizar_Clicked(object sender, EventArgs e)
     {
-        try
+        var datos = new
         {
-            WebClient cliente = new WebClient();
-            var parametros = new NameValueCollection();
-            parametros.Add("codigo", txtCodigo.Text); // Envía solo el código para eliminar
+            codigo = txtCodigo.Text,
+            nombre = txtNombre.Text,
+            apellido = txtApellido.Text,
+            edad = txtEdad.Text
+        };
+        var json = JsonConvert.SerializeObject(datos);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await cliente.PutAsync(Url, content);
+        string respuesta = await response.Content.ReadAsStringAsync();
 
-            cliente.UploadValues("http://192.168.17.21/semana6/estudiantews.php", "POST", parametros);
-
-            DisplayAlert("Eliminado", "El estudiante ha sido eliminado correctamente.", "OK");
-            Navigation.PushAsync(new Estudiante()); // Vuelve a la página de lista de estudiantes
+        if (response.IsSuccessStatusCode)
+        {
+            await DisplayAlert("Éxito", "Los datos se actualizaron correctamente.", "Aceptar");
+            Navigation.PushAsync(new Estudiante());
         }
-        catch (Exception ex)
+        else
         {
-            DisplayAlert("Alerta", ex.Message, "OK");
+            await DisplayAlert("Error", "Hubo un problema al intentar actualizar los datos.", "Aceptar");
         }
     }
 
-    private void btnActualizar_Clicked(object sender, EventArgs e)
+    private  async void btnElimianr_Clicked(object sender, EventArgs e)
     {
-        try
+        var codigo = txtCodigo.Text;
+        var response = await cliente.DeleteAsync($"{Url}?codigo={codigo}");
+        string respuesta = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
         {
-            WebClient cliente = new WebClient();
-            var parametros = new NameValueCollection();
-            parametros.Add("codigo", txtCodigo.Text);
-            parametros.Add("nombre", txtNombre.Text);
-            parametros.Add("apellido", txtApellido.Text);
-            parametros.Add("edad", txtEdad.Text);
-
-            cliente.UploadValues("http://192.168.17.21/semana6/estudiantews.php", "POST", parametros);
-
-            DisplayAlert("Actualizado", "El estudiante ha sido actualizado correctamente.", "OK");
-            Navigation.PushAsync(new Estudiante()); // Vuelve a la página de lista de estudiantes
+            await DisplayAlert("Éxito", "El estudiante se eliminó correctamente.", "Aceptar");
+            Navigation.PushAsync(new Estudiante());
         }
-        catch (Exception ex)
+        else
         {
-            DisplayAlert("Alerta", ex.Message, "OK");
+            await DisplayAlert("Error", "Hubo un problema al intentar eliminar al estudiante.", "Aceptar");
         }
     }
+ 
 }
